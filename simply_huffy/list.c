@@ -16,6 +16,15 @@ void list_destroy(List* list)
 	list->size = 0;
 }
 
+void list_destroy_link(List* list)
+{
+	list_clear_link(list);
+
+	list->head = NULL;
+	list->tail = NULL;
+	list->size = 0;
+}
+
 void list_push_back(List* list, char* symbol)
 {
 	int16_t number_of_symbols = strlen(symbol) + 1;
@@ -55,6 +64,22 @@ void list_push_back(List* list, char* symbol)
 	}
 }
 
+void list_push_back_link(List* list, Node* node)
+{
+	if (list->size == 0)
+	{
+		list->head = node;
+		list->tail = list->head;
+		list->size += 1;
+	}
+	else
+	{
+		list->tail->next = node;
+		list->tail = list->tail->next;
+		list->size += 1;
+	}
+}
+
 Node* list_front(List* list)
 {
 	return list->head;
@@ -71,6 +96,11 @@ Node* list_pop_front(List* list)
 	old_head->next = NULL;
 
 	return old_head;
+}
+
+Node* list_pop_front_link(List* list)
+{
+	return list_pop_front(list);
 }
 
 Node* list_back(List* list)
@@ -93,6 +123,21 @@ void list_clear(List* list)
 	}
 }
 
+void list_clear_link(List* list)
+{
+	if (list->size == 0)
+		return;
+
+	Node* current = list->head;
+	Node* next = NULL;
+	while (current != NULL)
+	{
+		next = current->next;
+		list_pop_front_link(list);
+		current = next;
+	}
+}
+
 void list_sort(List* list)
 {
 	if (list->size < 2)
@@ -110,16 +155,20 @@ void list_sort(List* list)
 			{
 				char* symbol = current->symbol;
 				int16_t count = current->count;
+
+				Node* parent = current->parent;
 				Node* left = current->left;
 				Node* right = current->right;
 
 				current->symbol = next->symbol;
 				current->count = next->count;
+				current->parent = next->parent;
 				current->left = next->left;
 				current->right = next->right;
 
 				next->symbol = symbol;
 				next->count = count;
+				next->parent = parent;
 				next->left = left;
 				next->right = right;
 
@@ -140,4 +189,16 @@ void list_print(List* list)
 		printf("%s - %d\n", current->symbol, current->count);
 		current = current->next;
 	}
+}
+
+uint8_t list_is_on_list(List* list, Node* node)
+{
+	Node* current = list->head;	
+	while (current != NULL)
+	{
+		if (current == node)
+			return 1;
+		current = current->next;;
+	}
+	return 0;
 }

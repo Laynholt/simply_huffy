@@ -46,6 +46,9 @@ int main(int argc, char** argv)
 		Node* parent_node = list_back(&list);
 		parent_node->left = left_node;
 		parent_node->right = right_node;
+
+		left_node->parent = parent_node;
+		right_node->parent = parent_node;
 	}
 	Tree tree;
 	Element* table = NULL;
@@ -57,15 +60,24 @@ int main(int argc, char** argv)
 	tree_print(&tree);
 	printf("\n");
 
-	tree_create_table(&tree, &table);
-	printf("Huffman codes:\n");
+	tree_create_table(&tree, &table, TABLE_RECURSION_MODE);
+	printf("Huffman codes (using recursion):\n");
 	for (int16_t i = 0; i < number_of_variables; ++i)
 	{
 		printf("%c - %s\n", table[i].symbol, table[i].code);
 	}
-
 	tree_destroy_table(&tree, table);
-	tree_destroy(&tree);
+	
+	tree_create_table(&tree, &table, TABLE_CYCLE_MODE);
+	printf("\n\nHuffman codes (using cycle):\n");
+	for (int16_t i = 0; i < number_of_variables; ++i)
+	{
+		printf("%c - %s\n", table[i].symbol, table[i].code);
+	}
+	tree_destroy_table(&tree, table);
+
+	//tree_destroy(&tree);
+	tree_destroy_cycle(&tree);
 	list_destroy(&list);
 	
 	return 0;

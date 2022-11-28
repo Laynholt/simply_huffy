@@ -14,6 +14,7 @@ typedef struct Node
 	struct Node* next;
 
 	// Указатели для дерева
+	struct Node* parent;
 	struct Node* left;
 	struct Node* right;
 

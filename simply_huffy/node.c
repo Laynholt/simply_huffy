@@ -9,6 +9,8 @@ Node* node_create(int16_t number_of_symbols)
 
 	node->count = 0;
 	node->next = NULL;
+
+	node->parent = NULL;
 	node->left = NULL;
 	node->right = NULL;
 
